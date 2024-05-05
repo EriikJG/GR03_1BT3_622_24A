@@ -6,7 +6,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 import logica.Automovil;
 
-@Generated(value="EclipseLink-2.7.10.v20211216-rNA", date="2024-04-28T15:04:07")
+@Generated(value="EclipseLink-2.7.10.v20211216-rNA", date="2024-05-03T22:25:36")
 @StaticMetamodel(Mecanica.class)
 public class Mecanica_ { 
 

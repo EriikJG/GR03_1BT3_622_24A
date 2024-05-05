@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import logica.Automovil;
 import logica.Controladora;
 import logica.Reparacion;
+import persistencia.ReparacionJpaController;
 
 /**
  *
@@ -27,20 +28,13 @@ public class SvReparacion extends HttpServlet {
     Controladora control = new Controladora();
 
 
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -58,34 +52,25 @@ public class SvReparacion extends HttpServlet {
 
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String descripcion = request.getParameter("descripcion"); 
-        String costo = request.getParameter("costo"); 
-        
-        String placa = (String) request.getSession().getAttribute("placa");
-        Automovil automovil = control.encontrarAuto(placa);
-               
-        control.crearReparacion(descripcion,costo,automovil);
-        
-        
+        crearReparacion(request);
+
+
         response.sendRedirect("inicio.jsp");
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
+    private void crearReparacion(HttpServletRequest request) {
+        String descripcion = request.getParameter("descripcion");
+        String costo = request.getParameter("costo");
+        String placa = (String) request.getSession().getAttribute("placa");
+        Automovil automovil = control.encontrarAuto(placa);
+        control.crearReparacion(descripcion,costo,automovil);
+    }
+
+
     @Override
     public String getServletInfo() {
         return "Short description";

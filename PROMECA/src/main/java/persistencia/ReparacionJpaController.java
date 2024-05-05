@@ -21,36 +21,37 @@ import persistencia.exceptions.NonexistentEntityException;
  *
  * @author USER
  */
+
 public class ReparacionJpaController implements Serializable {
 
+    // EntityManagerFactory para la gestión de entidades
+    private final EntityManagerFactory emf;
+
+    // Constructor que recibe una instancia de EntityManagerFactory
     public ReparacionJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
-    private EntityManagerFactory emf = null;
 
+    // Constructor por defecto que crea una instancia de EntityManagerFactory
+    public ReparacionJpaController() {
+        emf = Persistence.createEntityManagerFactory("mecanica_PU");
+    }
+
+    // Método para obtener un EntityManager
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
 
-    public  ReparacionJpaController() {
-        emf = Persistence.createEntityManagerFactory("mecanica_PU");
-    }
-
+    // Método para crear una nueva reparación en la base de datos
     public void create(Reparacion reparacion) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Automovil automovil = reparacion.getAutomovil();
-            if (automovil != null) {
-                automovil = em.getReference(automovil.getClass(), automovil.getId());
-                reparacion.setAutomovil(automovil);
-            }
+            // Adjunta el automóvil a la reparación si existe
+            reparacion.setAutomovil(adjuntarAutomovil(em, reparacion.getAutomovil()));
+            // Persiste la reparación en la base de datos
             em.persist(reparacion);
-            if (automovil != null) {
-                automovil.getReparaciones().add(reparacion);
-                automovil = em.merge(automovil);
-            }
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -59,76 +60,17 @@ public class ReparacionJpaController implements Serializable {
         }
     }
 
-    public void edit(Reparacion reparacion) throws NonexistentEntityException, Exception {
-        EntityManager em = null;
-        try {
-            em = getEntityManager();
-            em.getTransaction().begin();
-            Reparacion persistentReparacion = em.find(Reparacion.class, reparacion.getId());
-            Automovil automovilOld = persistentReparacion.getAutomovil();
-            Automovil automovilNew = reparacion.getAutomovil();
-            if (automovilNew != null) {
-                automovilNew = em.getReference(automovilNew.getClass(), automovilNew.getId());
-                reparacion.setAutomovil(automovilNew);
-            }
-            reparacion = em.merge(reparacion);
-            if (automovilOld != null && !automovilOld.equals(automovilNew)) {
-                automovilOld.getReparaciones().remove(reparacion);
-                automovilOld = em.merge(automovilOld);
-            }
-            if (automovilNew != null && !automovilNew.equals(automovilOld)) {
-                automovilNew.getReparaciones().add(reparacion);
-                automovilNew = em.merge(automovilNew);
-            }
-            em.getTransaction().commit();
-        } catch (Exception ex) {
-            String msg = ex.getLocalizedMessage();
-            if (msg == null || msg.length() == 0) {
-                int id = reparacion.getId();
-                if (findReparacion(id) == null) {
-                    throw new NonexistentEntityException("The reparacion with id " + id + " no longer exists.");
-                }
-            }
-            throw ex;
-        } finally {
-            if (em != null) {
-                em.close();
-            }
+    // Método privado para adjuntar un automóvil a la reparación
+    private Automovil adjuntarAutomovil(EntityManager em, Automovil automovil) {
+        if (automovil != null) {
+            // Obtiene una referencia al automóvil desde la base de datos
+            automovil = em.getReference(Automovil.class, automovil.getId());
         }
-    }
-
-    public void destroy(int id) throws NonexistentEntityException {
-        EntityManager em = null;
-        try {
-            em = getEntityManager();
-            em.getTransaction().begin();
-            Reparacion reparacion;
-            try {
-                reparacion = em.getReference(Reparacion.class, id);
-                reparacion.getId();
-            } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The reparacion with id " + id + " no longer exists.", enfe);
-            }
-            Automovil automovil = reparacion.getAutomovil();
-            if (automovil != null) {
-                automovil.getReparaciones().remove(reparacion);
-                automovil = em.merge(automovil);
-            }
-            em.remove(reparacion);
-            em.getTransaction().commit();
-        } finally {
-            if (em != null) {
-                em.close();
-            }
-        }
+        return automovil;
     }
 
     public List<Reparacion> findReparacionEntities() {
         return findReparacionEntities(true, -1, -1);
-    }
-
-    public List<Reparacion> findReparacionEntities(int maxResults, int firstResult) {
-        return findReparacionEntities(false, maxResults, firstResult);
     }
 
     private List<Reparacion> findReparacionEntities(boolean all, int maxResults, int firstResult) {
@@ -147,26 +89,6 @@ public class ReparacionJpaController implements Serializable {
         }
     }
 
-    public Reparacion findReparacion(int id) {
-        EntityManager em = getEntityManager();
-        try {
-            return em.find(Reparacion.class, id);
-        } finally {
-            em.close();
-        }
-    }
 
-    public int getReparacionCount() {
-        EntityManager em = getEntityManager();
-        try {
-            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Reparacion> rt = cq.from(Reparacion.class);
-            cq.select(em.getCriteriaBuilder().count(rt));
-            Query q = em.createQuery(cq);
-            return ((Long) q.getSingleResult()).intValue();
-        } finally {
-            em.close();
-        }
-    }
 
 }

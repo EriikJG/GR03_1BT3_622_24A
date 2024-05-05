@@ -26,6 +26,7 @@
                                             <th>Id</th>
                                             <th>Costo</th>
                                             <th>Descripcion</th>
+                                            <th>Placa</th>
                                             <th style="width: 210px">Acción</th>
                                         </tr>
                                     </thead>
@@ -34,6 +35,7 @@
                                             <th>Id</th>
                                             <th>Costo</th>
                                             <th>Descripcion</th>
+                                            <th>Placa</th>
                                             <th style=" width: 210px">Acción</th>
                                         </tr>
                                     </tfoot>
@@ -49,7 +51,7 @@
                                             <td id="id_repa"<%= repa.getId() %>"><%= repa.getId()%>   </td>
                                             <td><%=repa.getCosto()%></td>
                                             <td><%=repa.getDescripcion()%></td>
-                                           
+                                            <td><%=repa.getAutomovil().getPlaca()%></td>
                                             <td style="display: flex; width: 230px;">
                                                 <form name="eliminar" action="inicio.jsp" method="POST"> <!-- esto es para mandar el codigo al servlet -->
                                                             <button type="submit" class="btn btn-primary btn-user btn-block" style="background-color:red; margin-right: 5px; "> 

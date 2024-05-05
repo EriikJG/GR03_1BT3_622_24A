@@ -81,7 +81,7 @@ public class Mecanica implements Serializable {
 
     @Override
     public String toString() {
-        return "Mecanica{" + "automoviles=" + automoviles + '}';
+        return "Mecanica{" + "automoviles=" + automoviles +  nombre;
     }
 
 }

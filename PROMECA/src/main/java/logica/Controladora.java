@@ -4,45 +4,64 @@
  */
 package logica;
 
-import java.util.ArrayList;
 import java.util.List;
-import persistencia.ControladoraPersistencia;
+
+import persistencia.AutomovilJpaController;
+import persistencia.MecanicaJpaController;
+import persistencia.ReparacionJpaController;
 
 /**
  *
  * @author USER
  */
 public class Controladora {
-    ControladoraPersistencia control = new ControladoraPersistencia();
-    //private Mecanica mecanica = new Mecanica();
+    MecanicaJpaController controlMecanica = new MecanicaJpaController();
+    AutomovilJpaController controlAutomovil = new AutomovilJpaController();
+
+    ReparacionJpaController controlReparacion = new ReparacionJpaController();
+
+
     public Controladora() {
     }
 
    
-    
+
     public void crearMecanica(String nombre,String direccion ,String correo,List<Automovil> autos) {
+
+        Mecanica mecanicaController = controlMecanica.findMecanica(1);
+
+        if (nombre.equals(mecanicaController.getNombre())){
+             return;
+             }
         Mecanica mecanica = new Mecanica(nombre,direccion,correo,autos);
-               
-        control.crearMecanica(mecanica);
+        controlMecanica.create(mecanica);
     }
+
+
       public void crearReparacion( String descripcion ,String costo, Automovil automovil) {
 
         Reparacion reparacion = new Reparacion();
+          enviarDatosReparacion(descripcion, costo, automovil, reparacion);
+
+          controlReparacion.create(reparacion);
+          aniadirReparacion(automovil, reparacion);
+
+      }
+
+    private static void enviarDatosReparacion(String descripcion, String costo, Automovil automovil, Reparacion reparacion) {
         reparacion.setDescripcion(descripcion);
         reparacion.setCosto(costo);
         reparacion.setAutomovil(automovil);
-        
-        control.crearReparacion(reparacion);
+    }
+
+    private void aniadirReparacion(Automovil automovil, Reparacion reparacion) {
         List<Reparacion> reparaciones = encontrarAuto(automovil.getPlaca()).getReparaciones();
         reparaciones.add(reparacion);
-        editarAutomovil(encontrarAuto(automovil.getPlaca()));
-        
     }
-      
-      public Automovil encontrarAuto (String placa) {
+
+    public Automovil encontrarAuto (String placa) {
        
-        List<Automovil> listaAutomoviles = new ArrayList<>();
-        listaAutomoviles = control.getAutomovil();
+        List<Automovil> listaAutomoviles =  controlAutomovil.findAutomovilEntities();
         for (Automovil auto : listaAutomoviles) {
             if(auto.getPlaca().equals(placa)) {
                 return auto;
@@ -52,45 +71,44 @@ public class Controladora {
       }
        
 
-    
 
       public List<Reparacion> getReparaciones() {
-       
-        return control.getReparaciones();
-        
-        
+
+        return controlReparacion.findReparacionEntities();
+
+
     }
-      
-     
-      
+
+
+
 
     public void crearAutomovil(String placa, String marca, String anioFab, String propietario, List<Reparacion> reparaciones, Mecanica mecanica) {
         Automovil auto = new Automovil();
+        aniadirDatosAutomovil(placa, marca, anioFab, propietario, reparaciones, mecanica, auto);
+
+        controlAutomovil.create(auto);
+        aniadirAutomovil(auto);
+
+    }
+
+    private void aniadirAutomovil(Automovil auto) {
+        List<Automovil> autos = obtenerMecanica().getAutomoviles();
+        autos.add(auto);
+    }
+
+    private static void aniadirDatosAutomovil(String placa, String marca, String anioFab, String propietario, List<Reparacion> reparaciones, Mecanica mecanica, Automovil auto) {
         auto.setPlaca(placa);
         auto.setMarca(marca);
         auto.setAñoFabricacion(anioFab);
         auto.setPropietario(propietario);
         auto.setReparaciones(reparaciones);
         auto.setMecanica(mecanica);
-        
-       // Mecanica mecanica = control.traerMecanica();
-        control.crearAuto(auto);
-        List<Automovil> autos = traerMecanica().getAutomoviles();
-        autos.add(auto);
-        editarMecanica();
-        
-    }
-    
-    public void editarMecanica(){
-        control.editarMecanica();
     }
 
-    public Mecanica traerMecanica() {
-      return control.traerMecanica();
+    public Mecanica obtenerMecanica() {
+
+        return controlMecanica.findMecanica(1);
     }
 
-    private void editarAutomovil(Automovil automovil) {
-        control.editarAutomovil(automovil);
-    }
 }
       
