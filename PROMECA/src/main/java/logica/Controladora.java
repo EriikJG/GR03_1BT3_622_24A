@@ -9,6 +9,7 @@ import java.util.List;
 import persistencia.AutomovilJpaController;
 import persistencia.MecanicaJpaController;
 import persistencia.ReparacionJpaController;
+import persistencia.UsuarioJpaController;
 
 /**
  *
@@ -19,7 +20,7 @@ public class Controladora {
     AutomovilJpaController controlAutomovil = new AutomovilJpaController();
 
     ReparacionJpaController controlReparacion = new ReparacionJpaController();
-
+    UsuarioJpaController controlUsuario = new UsuarioJpaController();
 
     public Controladora() {
     }
@@ -30,11 +31,11 @@ public class Controladora {
 
         Mecanica mecanicaController = controlMecanica.findMecanica(1);
 
-        if (nombre.equals(mecanicaController.getNombre())){
-             return;
+        if (mecanicaController == null || !nombre.equals(mecanicaController.getNombre())){
+            Mecanica mecanica = new Mecanica(nombre,direccion,correo,autos);
+            controlMecanica.create(mecanica);
              }
-        Mecanica mecanica = new Mecanica(nombre,direccion,correo,autos);
-        controlMecanica.create(mecanica);
+
     }
 
 
@@ -82,7 +83,7 @@ public class Controladora {
 
 
 
-    public void crearAutomovil(String placa, String marca, String anioFab, String propietario, List<Reparacion> reparaciones, Mecanica mecanica) {
+    public void crearAutomovil(String placa, String marca, String anioFab, Usuario propietario, List<Reparacion> reparaciones, Mecanica mecanica) {
         Automovil auto = new Automovil();
         aniadirDatosAutomovil(placa, marca, anioFab, propietario, reparaciones, mecanica, auto);
 
@@ -96,7 +97,7 @@ public class Controladora {
         autos.add(auto);
     }
 
-    private static void aniadirDatosAutomovil(String placa, String marca, String anioFab, String propietario, List<Reparacion> reparaciones, Mecanica mecanica, Automovil auto) {
+    private static void aniadirDatosAutomovil(String placa, String marca, String anioFab, Usuario propietario, List<Reparacion> reparaciones, Mecanica mecanica, Automovil auto) {
         auto.setPlaca(placa);
         auto.setMarca(marca);
         auto.setAñoFabricacion(anioFab);
@@ -110,5 +111,27 @@ public class Controladora {
         return controlMecanica.findMecanica(1);
     }
 
+
+    public void crearUsuario(int cedula, String nombre, String apellido, String correo, String telefono, String direccion, List<Automovil> autos) {
+        Usuario usuario = new Usuario(cedula,nombre,apellido,telefono,correo,direccion,autos);
+
+
+        controlUsuario.create(usuario);
+
+    }
+
+
+    public Usuario encontrarUsuario(int cedula) {
+        List<Usuario> usuarios =  controlUsuario.findUsuarioEntities();
+        for (Usuario usuario : usuarios) {
+            if(usuario.getCedula() == cedula) {
+                return usuario;
+            }
+        }
+        return null;
+    }
+
+
 }
+
       

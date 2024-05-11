@@ -30,7 +30,9 @@ public class Automovil implements Serializable {
     private String placa;
     private String marca;
     private String añoFabricacion;
-    private String propietario;
+    @ManyToOne
+    @JoinColumn(name="id_propietario")
+    private Usuario propietario;
     @OneToMany(mappedBy="automovil")
     private List<Reparacion> reparaciones;
     @ManyToOne
@@ -40,7 +42,7 @@ public class Automovil implements Serializable {
     public Automovil() {
     }
 
-    public Automovil(String placa, String marca, String añoFabricacion, String propietario, List<Reparacion> reparaciones) {
+    public Automovil(String placa, String marca, String añoFabricacion, Usuario propietario, List<Reparacion> reparaciones) {
         this.placa = placa;
         this.marca = marca;
         this.añoFabricacion = añoFabricacion;
@@ -81,11 +83,11 @@ public class Automovil implements Serializable {
         this.añoFabricacion = añoFabricacion;
     }
 
-    public String getPropietario() {
+    public Usuario getPropietario() {
         return propietario;
     }
 
-    public void setPropietario(String propietario) {
+    public void setPropietario(Usuario propietario) {
         this.propietario = propietario;
     }
 

@@ -51,7 +51,7 @@ public class SvEncontrarPlaca extends HttpServlet {
             response.sendRedirect("reparacion.jsp");
         }
        else {
-            response.sendRedirect("automovil.jsp");
+            response.sendRedirect("buscarUsuario.jsp");
         }
     }
 

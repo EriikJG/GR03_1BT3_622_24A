@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import logica.Controladora;
 import logica.Mecanica;
 import logica.Reparacion;
+import logica.Usuario;
 
 
 /**
@@ -53,7 +54,7 @@ public class SvAutomovil extends HttpServlet {
         String placa = request.getParameter("placa");
         String marca = request.getParameter("marca");
         String anioFab = request.getParameter("anioFab");
-        String propietario = request.getParameter("propietario");
+        Usuario propietario = (Usuario) request.getSession().getAttribute("propietario");
 
         Mecanica  mecanica = control.obtenerMecanica();
         HttpSession misession = request.getSession(true);

@@ -18,11 +18,7 @@
                                     <div class="col-sm-6 mb-3">
                                         <input type="text" class="form-control form-control-user" id="anioFab" name="anioFab"
                                             placeholder="Año de Fabricacion">
-                                    </div> 
-                                     <div class="col-sm-6 mb-3">
-                                        <input type="text" class="form-control form-control-user" id="propietario" name="propietario"
-                                            placeholder="Propietario">
-                                    </div> 
+                                    </div>
                                                                      
                                 </div>
                                 
