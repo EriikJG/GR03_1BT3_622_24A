@@ -24,7 +24,7 @@ public class CalendarioTest {
 
 
     @Test
-    public void reservarCitaFechaNoDisponible() {
+    public void givenFechaNoDisponible_whenReservarCita_thenNoSeReserva() {
 
         Cita citaNoDisponible = calendario.getCitas().get(2);
         citaNoDisponible.setFecha(LocalDate.now().minusDays(1));
@@ -33,7 +33,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void reservarCitaFechaDisponible() {
+    public void  givenFechaDisponible_whenReservarCita_thenSeReserva() {
 
         Cita citaDisponible = calendario.getCitas().get(9);
 
@@ -44,7 +44,7 @@ public class CalendarioTest {
 
 
     @Test
-    public void reservarCitaYaAsignada() {
+    public void givenCitaYaAsignada_whenReservarCita_thenNoSeReservaNuevaCita() {
         Cita citaDisponible = calendario.getCitas().get(2);
         calendario.reservarCita(citaDisponible, cliente);
 
@@ -54,7 +54,7 @@ public class CalendarioTest {
 
 
     @Test
-    public void eliminarCitaReservada() {
+    public void givenCitaReservada_whenEliminarCita_thenCitaEliminadaCorrectamente() {
 
         Cita citaReservada = calendario.getCitas().get(2);
 
@@ -66,7 +66,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void eliminarCitaCitaNoReservada() {
+    public void givenCitaNoReservada_whenEliminarCita_thenNoSeEliminaCita() {
 
         Cita citaNoReservada = calendario.getCitas().get(2);
 
@@ -75,7 +75,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void verificarClienteSeaElMismo() {
+    public void givenClienteReservaCita_whenVerificarClienteSeaElMismo_thenClienteEsCorrecto() {
 
         Cita citaDisponible = calendario.getCitas().get(2);
 
@@ -86,7 +86,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void reservarCitaHoraNoValida() {
+    public void givenHoraNoValida_whenReservarCita_thenNoSeReserva() {
 
         Cita citaNoDisponible = calendario.getCitas().get(2);
         citaNoDisponible.setHora(LocalTime.parse("18:00"));
@@ -95,7 +95,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void editarHoraDeCita() {
+    public void givenEditarHoraDeCita_whenReservarCita_thenHoraEditadaCorrectamente() {
 
         Cita citaNoDisponible = calendario.getCitas().get(2);
         citaNoDisponible.setHora(LocalTime.parse("14:30"));
